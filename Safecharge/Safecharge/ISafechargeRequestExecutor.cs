@@ -39,7 +39,8 @@ namespace Safecharge
 
         /// <summary>
         /// This method should be used to create request for voidTransaction endpoint in Safecharge's REST API.
-        /// </summary>s
+        /// </summary>
+        /// <param name="voidTransactionRequest">Request model for voiding a transaction.</param>
         /// <returns><see cref="VoidTransactionResponse"/> data</returns>
         /// <exception cref="SafechargeConfigurationException">If status of the response is Error</exception>
         Task<VoidTransactionResponse> VoidTransaction(VoidTransactionRequest voidTransactionRequest);
@@ -47,6 +48,7 @@ namespace Safecharge
         /// <summary>
         /// This method should be used to create request for refundTransaction endpoint in Safecharge's REST API.
         /// </summary>
+        /// <param name="refundTransactionRequest">Request model for refunding a transaction.</param>
         /// <returns><see cref="RefundTransactionResponse"/> data</returns>
         /// <exception cref="SafechargeConfigurationException">If status of the response is Error</exception>
         Task<RefundTransactionResponse> RefundTransaction(RefundTransactionRequest refundTransactionRequest);
@@ -116,12 +118,14 @@ namespace Safecharge
         Task<GetMerchantPaymentMethodsResponse> GetMerchantPaymentMethods(GetMerchantPaymentMethodsRequest request);
 
         /// <summary>
-        /// This method executes POST SafechargeRequests to the SafeCharge's REST API 
+        /// This method executes POST SafechargeRequests to the SafeCharge's REST API.
+        /// It is a generic method to handle various request and response types.
         /// </summary>
-        /// <typeparam name="T1"><see cref="Response.Common.SafechargeResponse"/> data</typeparam>
-        /// <typeparam name="T2"><see cref="SafechargeRequest"/> data</typeparam>
-        /// <param name="request"><see cref="SafechargeBaseRequest"/> data</param>
-        /// <returns><see cref="Response.Common.SafechargeResponse"/> data</returns>
+        /// <typeparam name="T1">The expected response type, derived from <see cref="SafechargeResponse"/>.</typeparam>
+        /// <typeparam name="T2">The request type, derived from <see cref="SafechargeBaseRequest"/>.</typeparam>
+        /// <param name="request">The request object to post.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the deserialized response of type <typeparamref name="T1"/>.</returns>
+        /// <exception cref="SafechargeException">If an error occurs during the HTTP request or response processing.</exception>
         Task<T1> PostAsync<T1, T2>(SafechargeBaseRequest request);
     }
 }

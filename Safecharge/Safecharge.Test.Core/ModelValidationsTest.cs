@@ -799,5 +799,55 @@ namespace Safecharge.Test.Core
 
             Assert.Pass();
         }
+
+        #region Guard Enhancements Tests
+
+        // Tests for UserAddress.Country
+        [Test]
+        public void UserAddress_Country_ValidCode_ShouldNotThrow()
+        {
+            var address = new UserAddress();
+            Assert.DoesNotThrow(() => address.Country = "US", "Setting valid country code 'US' should not throw.");
+            Assert.AreEqual("US", address.Country);
+            Assert.DoesNotThrow(() => address.Country = "GB", "Setting valid country code 'GB' should not throw.");
+            Assert.AreEqual("GB", address.Country);
+
+            // Null/empty should also not throw as per Guard logic (optional field that passes regex if not empty)
+            // The Guard.RequiresValidCountryCode currently returns if string.IsNullOrWhiteSpace(countryCode) is true.
+            Assert.DoesNotThrow(() => address.Country = null, "Setting null country code should not throw.");
+            Assert.IsNull(address.Country);
+            Assert.DoesNotThrow(() => address.Country = string.Empty, "Setting empty country code should not throw.");
+            Assert.AreEqual(string.Empty, address.Country);
+            Assert.DoesNotThrow(() => address.Country = "  ", "Setting whitespace country code should not throw.");
+            Assert.AreEqual("  ", address.Country); // Guard allows whitespace, subsequent logic might trim/reject
+        }
+
+        [TestCase("U1")]
+        [TestCase("USA")]
+        [TestCase("uS")] // Regex is case-sensitive for [A-Z]
+        [TestCase("12")]
+        [TestCase(" DE")] // Leading space
+        public void UserAddress_Country_InvalidCode_ShouldThrowArgumentException(string invalidCode)
+        {
+            var address = new UserAddress();
+            Assert.Throws<ArgumentException>(() => address.Country = invalidCode, $"Setting invalid country code '{invalidCode}' should throw ArgumentException.");
+        }
+
+        // Tests for MerchantInfo constructor (HashAlgorithmType)
+        [Test]
+        public void MerchantInfo_Constructor_ValidHashAlgorithm_ShouldNotThrow()
+        {
+            Assert.DoesNotThrow(() => new MerchantInfo("key", "id", "siteid", "host", HashAlgorithmType.SHA256), "Constructing MerchantInfo with SHA256 should not throw.");
+            Assert.DoesNotThrow(() => new MerchantInfo("key", "id", "siteid", "host", HashAlgorithmType.MD5), "Constructing MerchantInfo with MD5 should not throw.");
+        }
+
+        [Test]
+        public void MerchantInfo_Constructor_InvalidHashAlgorithm_ShouldThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new MerchantInfo("key", "id", "siteid", "host", (HashAlgorithmType)99), "Constructing MerchantInfo with undefined HashAlgorithmType (99) should throw ArgumentException.");
+            Assert.Throws<ArgumentException>(() => new MerchantInfo("key", "id", "siteid", "host", (HashAlgorithmType)(-1)), "Constructing MerchantInfo with undefined HashAlgorithmType (-1) should throw ArgumentException.");
+        }
+
+        #endregion
     }
 }

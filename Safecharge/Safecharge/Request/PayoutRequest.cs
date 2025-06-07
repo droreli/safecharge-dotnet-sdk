@@ -39,12 +39,12 @@ namespace Safecharge.Request
         /// Initializes a new instance of the <see cref="PayoutRequest"/> with the required parameters.
         /// </summary>
         /// <param name="merchantInfo">Merchant's data (E.g. secret key, the merchant id, the merchant site id, etc.)</param>
-        /// <param name="sessionToken">The session identifier returned by /getSessionToken.</param>
-        /// <param name="userTokenId">ID of the user in merchant system.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
-        /// <param name="amount">The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
-        /// <param name="currency">The three character ISO currency code of the transaction.</param>
-        /// <param name="userPaymentOption">User payment option data.</param>
+        /// <param name="sessionToken">The session token obtained from Safecharge API.</param>
+        /// <param name="userTokenId">(Required) ID of the user in the merchant's system.</param>
+        /// <param name="clientUniqueId">(Required) ID of the transaction in the merchant’s system. This must be sent to perform future actions, such as reconciliation.</param>
+        /// <param name="amount">(Required) The transaction amount as a string (e.g., "10.00").</param>
+        /// <param name="currency">(Required) The three-letter ISO currency code of the transaction (e.g., "USD").</param>
+        /// <param name="userPaymentOption">(Required) User payment option details. See <see cref="Model.PaymentOptionModels.UserPaymentOption"/>.</param>
         public PayoutRequest(
             MerchantInfo merchantInfo,
             string sessionToken,
@@ -89,6 +89,10 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// The transaction amount.
+        /// </summary>
+        /// <remarks>Max length is 12.</remarks>
         public string Amount
         {
             get { return this.amount; }
@@ -99,6 +103,10 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// The three-letter ISO currency code of the transaction.
+        /// </summary>
+        /// <remarks>Max length is 3.</remarks>
         public string Currency
         {
             get { return this.currency; }
@@ -109,11 +117,15 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// Gets or sets the user payment option details for this payout.
+        /// </summary>
         public UserPaymentOption UserPaymentOption { get; set; }
 
         /// <summary>
         /// Enables the addition of a free text comment to the request.
         /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthStringDefault"/>.</remarks>
         public string Comment
         {
             get { return this.comment; }
@@ -124,14 +136,30 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// Gets or sets the dynamic descriptor for the transaction, which appears on the user's bank statement.
+        /// </summary>
         public DynamicDescriptor DynamicDescriptor { get; set; }
 
+        /// <summary>
+        /// Gets or sets optional custom merchant-specific details.
+        /// </summary>
         public MerchantDetails MerchantDetails { get; set; }
 
+        /// <summary>
+        /// Gets or sets URL details for notifications or redirection.
+        /// </summary>
         public UrlDetails UrlDetails { get; set; }
 
+        /// <summary>
+        /// Gets or sets credit/debit card data if applicable for the payout.
+        /// </summary>
         public CardData CardData { get; set; }
 
+        /// <summary>
+        /// Gets or sets the user's phone number.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthPhone"/>.</remarks>
         public string Phone
         {
             get { return this.phone; }
@@ -142,6 +170,10 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// Gets or sets the User Payment Method ID.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthStringId"/>.</remarks>
         public string UserPmId
         {
             get { return this.userPmId; }

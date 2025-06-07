@@ -9,6 +9,8 @@ using Safecharge.Response;
 using Safecharge.Response.Common;
 using Safecharge.Response.Payment;
 using Safecharge.Utils.Enum;
+using System.Threading.Tasks; // Added for Task
+using Microsoft.Extensions.Logging.Abstractions; // Added for NullLoggerFactory
 
 namespace Safecharge.Sample
 {
@@ -42,7 +44,7 @@ namespace Safecharge.Sample
         private static GetCardDetailsRequest getCardDetailsRequestConfig;
         private static GetMerchantPaymentMethodsRequest getMerchantPaymentMethodsRequestConfig;
 
-        static void Main()
+        static async Task Main() // Changed to async Task
         {
             ReloadConfig();
 
@@ -53,12 +55,14 @@ namespace Safecharge.Sample
                 Safecharge safecharge;
                 try
                 {
-                    safecharge = new Safecharge(
+                    // Changed to await Safecharge.CreateAsync
+                    safecharge = await Safecharge.CreateAsync(
                         merchantInfoConfig.MerchantKey,
                         merchantInfoConfig.MerchantId,
                         merchantInfoConfig.MerchantSiteId,
                         merchantInfoConfig.ServerHost,
-                        HashAlgorithmType.SHA256);
+                        HashAlgorithmType.SHA256,
+                        NullLoggerFactory.Instance); // Added NullLoggerFactory
                 }
                 catch (Exception ex)
                 {

@@ -14,6 +14,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
         private string ccTempToken;
         private string cVV;
 
+        /// <summary>
+        /// The credit/debit card number.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthCardNumber"/>.</remarks>
         public string CardNumber
         {
             get { return this.cardNumber; }
@@ -24,6 +28,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
             }
         }
 
+        /// <summary>
+        /// The name of the cardholder as it appears on the card.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthCardHolderName"/>.</remarks>
         public string CardHolderName
         {
             get { return this.cardHolderName; }
@@ -34,6 +42,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
             }
         }
 
+        /// <summary>
+        /// The card's expiration month (e.g., "03", "12").
+        /// </summary>
+        /// <remarks>Max length is 2.</remarks>
         public string ExpirationMonth
         {
             get { return this.expirationMonth; }
@@ -44,6 +56,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
             }
         }
 
+        /// <summary>
+        /// The card's expiration year (e.g., "2023", "23").
+        /// </summary>
+        /// <remarks>Max length is 4.</remarks>
         public string ExpirationYear
         {
             get { return this.expirationYear; }
@@ -54,6 +70,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
             }
         }
 
+        /// <summary>
+        /// A temporary token for the card details, often used in tokenization schemes.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthStringId"/>.</remarks>
         public string CcTempToken
         {
             get { return this.ccTempToken; }
@@ -64,6 +84,10 @@ namespace Safecharge.Model.PaymentOptionModels.CardModels
             }
         }
 
+        /// <summary>
+        /// The Card Verification Value (CVV, CVC2, CID).
+        /// </summary>
+        /// <remarks>Length must be between 3 and 4 characters.</remarks>
         public string CVV
         {
             get { return this.cVV; }

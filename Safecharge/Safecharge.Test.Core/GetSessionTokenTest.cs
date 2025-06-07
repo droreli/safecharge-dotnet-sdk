@@ -1,5 +1,7 @@
 using System;
 using System.Net.Http;
+using System.Threading.Tasks; // Added for Task
+using Microsoft.Extensions.Logging.Abstractions; // Added for NullLoggerFactory
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Safecharge.Model.Common;
@@ -147,58 +149,63 @@ namespace Safecharge.Test.Core
         }
 
         [Test]
-        public void TestInitializingSafecharge()
+        public async Task TestInitializingSafecharge() // Changed to async Task
         {
-            var safeCharge = new Safecharge(
+            var safeCharge = await Safecharge.CreateAsync( // Changed to await CreateAsync
                 MerchantKeyValue,
                 MerchantIdValue,
                 MerchantSiteIdValue,
                 ServerHostValue,
-                HashAlgorithmType.SHA256);
+                HashAlgorithmType.SHA256,
+                NullLoggerFactory.Instance); // Added NullLoggerFactory
 
             Assert.IsNotNull(safeCharge);
         }
 
         [Test]
-        public void TestInitializingSafechargeWithHttpClient()
+        public async Task TestInitializingSafechargeWithHttpClient() // Changed to async Task
         {
-            var safeCharge = new Safecharge(
+            var safeCharge = await Safecharge.CreateAsync( // Changed to await CreateAsync
                 new HttpClient(),
                 new MerchantInfo(
                     MerchantKeyValue,
                     MerchantIdValue,
                     MerchantSiteIdValue,
                     ServerHostValue,
-                    HashAlgorithmType.SHA256));
+                    HashAlgorithmType.SHA256),
+                NullLoggerFactory.Instance); // Added NullLoggerFactory
 
             Assert.IsNotNull(safeCharge);
         }
 
         [Test]
-        public void TestInitializingSafechargeWithMerchantInfo()
+        public async Task TestInitializingSafechargeWithMerchantInfo() // Changed to async Task
         {
-            var safeCharge = new Safecharge(
+            var safeCharge = await Safecharge.CreateAsync( // Changed to await CreateAsync
                 new MerchantInfo(
                     MerchantKeyValue,
                     MerchantIdValue,
                     MerchantSiteIdValue,
                     ServerHostValue,
-                    HashAlgorithmType.SHA256));
+                    HashAlgorithmType.SHA256),
+                NullLoggerFactory.Instance); // Added NullLoggerFactory
 
             Assert.IsNotNull(safeCharge);
         }
 
         [Test]
-        public void TestInitializingSafechargeWithWrongMerchantId()
+        public void TestInitializingSafechargeWithWrongMerchantId() // Stays sync for Assert.Throws
         {
-            ActualValueDelegate<object> safeChargeDelegate = () => new Safecharge(
+            // NUnit's Assert.Throws can take an AsyncTestDelegate
+            AsyncTestDelegate asyncTestDelegate = async () => await Safecharge.CreateAsync(
                 MerchantKeyValue,
-                "invalid",
+                "invalid", // This merchant ID might cause an error during GetSessionToken
                 MerchantSiteIdValue,
                 ServerHostValue,
-                HashAlgorithmType.SHA256);
+                HashAlgorithmType.SHA256,
+                NullLoggerFactory.Instance); // Added NullLoggerFactory
 
-            Assert.That(safeChargeDelegate, Throws.TypeOf<SafechargeConfigurationException>());
+            Assert.That(asyncTestDelegate, Throws.TypeOf<SafechargeConfigurationException>());
         }
     }
 }

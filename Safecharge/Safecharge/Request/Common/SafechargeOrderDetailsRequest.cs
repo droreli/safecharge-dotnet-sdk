@@ -6,7 +6,8 @@ using Safecharge.Utils.Enum;
 namespace Safecharge.Request.Common
 {
     /// <summary>
-    /// Abstract class to be used as a base for order related and payment requests.
+    /// Abstract base class for requests that involve order details, such as payment requests or opening an order.
+    /// It extends <see cref="SafechargeRequest"/> by adding common order and transaction parameters like currency, amount, items, and user details.
     /// </summary>
     public abstract class SafechargeOrderDetailsRequest : SafechargeRequest
     {
@@ -21,13 +22,13 @@ namespace Safecharge.Request.Common
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafechargeOrderDetailsRequest"/> with the required parameters.
+        /// Initializes a new instance of the <see cref="SafechargeOrderDetailsRequest"/> class with essential parameters.
         /// </summary>
-        /// <param name="merchantInfo">Merchant's data (E.g. secret key, the merchant id, the merchant site id, etc.)</param>
-        /// <param name="checksumOrderMapping">Type of checksum.</param>
-        /// <param name="sessionToken">The session identifier returned by /getSessionToken.</param>
-        /// <param name="currency">The three character ISO currency code of the transaction.</param>
-        /// <param name="amount">The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
+        /// <param name="merchantInfo">Merchant information. See <see cref="Model.Common.MerchantInfo"/>.</param>
+        /// <param name="checksumOrderMapping">The order of fields used for checksum calculation. See <see cref="Utils.Enum.ChecksumOrderMapping"/>.</param>
+        /// <param name="sessionToken">The session token obtained from Safecharge API.</param>
+        /// <param name="currency">The three-letter ISO currency code (e.g., "USD").</param>
+        /// <param name="amount">The transaction amount as a string (e.g., "10.00").</param>
         public SafechargeOrderDetailsRequest(
             MerchantInfo merchantInfo,
             ChecksumOrderMapping checksumOrderMapping,
@@ -99,8 +100,10 @@ namespace Safecharge.Request.Common
         }
 
         /// <summary>
-        /// ID of the transaction in merchant system.
+        /// ID of the transaction in the merchant's system.
+        /// This must be sent to perform future actions like reconciliation or identifying the transaction in case of issues.
         /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthStringId"/>.</remarks>
         public string ClientUniqueId
         {
             get { return this.clientUniqueId; }
@@ -111,6 +114,9 @@ namespace Safecharge.Request.Common
             }
         }
 
+        /// <summary>
+        /// Additional details about the transaction amount, such as tax, discount, or shipping.
+        /// </summary>
         public AmountDetails AmountDetails { get; set; }
     }
 }

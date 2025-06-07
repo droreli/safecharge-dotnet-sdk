@@ -11,6 +11,10 @@ namespace Safecharge.Model.Common
         private string price;
         private string quantity;
 
+        /// <summary>
+        /// The name of the item.
+        /// </summary>
+        /// <remarks>This field is mandatory.</remarks>
         public string Name
         {
             get { return this.name; }
@@ -22,6 +26,10 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The price of a single unit of the item. Represented as a string.
+        /// </summary>
+        /// <remarks>This field is mandatory. Max length is 10.</remarks>
         public string Price
         {
             get { return this.price; }
@@ -33,6 +41,10 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The quantity of the item. Represented as a string.
+        /// </summary>
+        /// <remarks>This field is mandatory. Max length is 10.</remarks>
         public string Quantity
         {
             get { return this.quantity; }

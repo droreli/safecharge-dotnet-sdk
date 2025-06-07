@@ -7,11 +7,12 @@ using Safecharge.Utils.Enum;
 namespace Safecharge.Request
 {
     /// <summary>
-    /// Request to create an order in the SafeCharge's system.
+    /// Represents a request to open an order in the Safecharge system.
     /// </summary>
     /// <remarks>
-    /// This request represents the state of the order when it is created, it can be changed at later time.
-    /// Note that no payment request is send, it is used mainly to store the order details at the time of creation.
+    /// This request creates or updates an order with items, amounts, and user details.
+    /// It does not process a payment but rather establishes an order that can be paid later.
+    /// It extends <see cref="Common.OpenOrder.OrderRequestWithDetails"/>.
     /// </remarks>
     public class OpenOrderRequest : OrderRequestWithDetails
     {
@@ -27,12 +28,12 @@ namespace Safecharge.Request
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OpenOrderRequest"/> with the required parameters.
+        /// Initializes a new instance of the <see cref="OpenOrderRequest"/> class with essential merchant and transaction details.
         /// </summary>
-        /// <param name="merchantInfo">Merchant's data (E.g. secret key, the merchant id, the merchant site id, etc.)</param>
-        /// <param name="sessionToken">The session identifier returned by /getSessionToken.</param>
-        /// <param name="currency">The three character ISO currency code of the transaction.</param>
-        /// <param name="amount">The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
+        /// <param name="merchantInfo">Merchant information. See <see cref="Model.Common.MerchantInfo"/>.</param>
+        /// <param name="sessionToken">The session token obtained from Safecharge API.</param>
+        /// <param name="currency">The three-letter ISO currency code (e.g., "USD").</param>
+        /// <param name="amount">The total order amount as a string (e.g., "10.00").</param>
         public OpenOrderRequest(
             MerchantInfo merchantInfo,
             string sessionToken,
@@ -40,11 +41,19 @@ namespace Safecharge.Request
             string amount)
             : base(merchantInfo, ChecksumOrderMapping.ApiGenericChecksumMapping, sessionToken, currency, amount)
         {
+            Guard.RequiresValidCurrencyCode(currency, nameof(currency));
             this.RequestUri = this.CreateRequestUri(ApiConstants.OpenOrderUrl);
         }
 
+        /// <summary>
+        /// The merchant's custom site name.
+        /// </summary>
         public string CustomSiteName { get; set; }
 
+        /// <summary>
+        /// An identifier for the product being sold.
+        /// </summary>
+        /// <remarks>Max length is 50.</remarks>
         public string ProductId
         {
             get { return this.productId; }
@@ -55,10 +64,21 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// Payment option details specific to opening an order.
+        /// </summary>
         public OpenOrderPaymentOption PaymentOption { get; set; }
 
+        /// <summary>
+        /// The type of transaction for this order (e.g., "Sale", "Auth").
+        /// See <see cref="ApiConstants"/> for predefined transaction types.
+        /// </summary>
         public string TransactionType { get; set; }
 
+        /// <summary>
+        /// Indicates if this order is part of a rebilling (recurring) sequence.
+        /// Expected values: "0" for false, "1" for true.
+        /// </summary>
         public string IsRebilling
         {
             get { return this.isRebilling; }
@@ -73,6 +93,10 @@ namespace Safecharge.Request
             }
         }
 
+        /// <summary>
+        /// When set to "1", this flag prevents overriding the billing address with the one from the UPO (User Payment Option).
+        /// Expected values: "0" for false, "1" for true.
+        /// </summary>
         public string PreventOverride
         {
             get { return this.preventOverride; }

@@ -6,5 +6,10 @@
             : base(message)
         {
         }
+
+        public SafechargeException(string message, System.Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 }

@@ -16,8 +16,9 @@ using Safecharge.Utils.Exceptions;
 namespace Safecharge
 {
     /// <summary>
-    /// This is an interface for a wrapper for the most used endpoints in Safecharge's REST API. It makes it easier to execute openOrder, 
-    /// initPayment and createPayment requests. First you have to invoke initialize method and then choose the corresponding request method.
+    /// Provides an interface for interacting with Safecharge's REST API endpoints.
+    /// This wrapper simplifies common payment operations such as opening orders, initializing payments, and creating payments.
+    /// Instances should be created via the static factory methods in the <see cref="Safecharge"/> class (e.g., <c>Safecharge.CreateAsync(...)</c>).
     /// </summary>
     public interface ISafecharge
     {
@@ -99,7 +100,7 @@ namespace Safecharge
         /// <param name="currency">(Required) The three character ISO currency code of the transaction.</param>
         /// <param name="amount">(Required) The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
         /// <param name="relatedTransactionId">(Required) The ID of the original transaction.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="userId">The customer’s ID as per the merchant’s userid.</param>
         /// <param name="addendums">This block contain industry specific addendums such as: Local payment, Hotel, Airline etc.</param>
@@ -147,7 +148,8 @@ namespace Safecharge
         /// <param name="currency">(Required) The three character ISO currency code of the transaction.</param>
         /// <param name="amount">(Required) The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
         /// <param name="relatedTransactionId">(Required) The ID of the original transaction.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="userId">The customer’s ID as per the merchant’s userid.</param>
         /// <param name="urlDetails">Although DMN response can be configured per merchant site, it will allow to dynamically return the DMN to the provided address per request.</param>
@@ -255,7 +257,7 @@ namespace Safecharge
         /// <param name="userPaymentOption">User payment option details</param>
         /// <param name="paymentMethod">Specifies the payment method name of the payment option to be charged.</param>
         /// <param name="userTokenId">ID of the user in merchant system.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="userId">The customer’s ID as per the merchant’s userid.</param>
         /// <param name="authenticationTypeOnly"></param>
@@ -316,7 +318,7 @@ namespace Safecharge
         /// <param name="amount">(Required) The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
         /// <param name="paymentOption">(Required) Details about the payment method.</param>
         /// <param name="userTokenId">ID of the user in merchant system.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="deviceDetails">Device details information.</param>
         /// <param name="urlDetails">Although DMN response can be configured per merchant site, it will allow to dynamically return the DMN to the provided address per request.</param>
@@ -358,7 +360,7 @@ namespace Safecharge
         /// <param name="relatedTransactionId">(Required) The ID of the original transaction.</param>
         /// <param name="items">List of items that will be purchased.</param>
         /// <param name="userTokenId">ID of the user in merchant system.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="isRebilling">When performing recurring/rebilling, use this field to indicate the recurring step. (0 or 1)</param>
         /// <param name="amountDetails">Amount details information.</param>
@@ -418,7 +420,7 @@ namespace Safecharge
         /// <param name="amount">(Required) The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
         /// <param name="paymentOption">(Required) Details about the payment method.</param>
         /// <param name="relatedTransactionId">(Required) The ID of the original transaction.</param>
-        /// <<param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
+        /// <param name="clientUniqueId">ID of the transaction in the merchant’s system. This must be sent in order to perform future actions, such as: reconciliation, identifying the transaction in the event of any issues, etc.</param>
         /// <param name="clientRequestId">Use this advanced field to prevent idempotency. Use it to uniquely identify the request you are submitting. If our system receives two calls with the same clientRequestId, it refuses the second call as it will assume idempotency.</param>
         /// <param name="billingAddress">Billing address related to a user payment option. Since order can contain only one payment option billing address is part of the order parameters.</param>
         /// <param name="customData">This parameter can be used to pass any type of information. If sent in request, then it is passed on to the payments gateway, and is visible in Nuvei’s back-office tool transaction reporting and is returned in response.</param>
@@ -548,12 +550,24 @@ namespace Safecharge
             SubMerchant subMerchant = null,
             Addendums addendums = null);
 
+        /// <summary>
+        /// Retrieves Dynamic Currency Conversion (DCC) details for a transaction.
+        /// <para>See Nuvei DCC documentation for more details.</para>
+        /// </summary>
+        /// <param name="clientRequestId">(Required) The client request ID for idempotency.</param>
+        /// <param name="clientUniqueId">(Required) The unique identifier for the client in the merchant's system.</param>
+        /// <param name="cardNumber">(Required) The card number for which DCC details are being requested.</param>
+        /// <param name="originalAmount">(Required) The original transaction amount.</param>
+        /// <param name="originalCurrency">(Required) The three-letter ISO code for the original transaction currency.</param>
+        /// <param name="currency">(Required) The three-letter ISO code for the desired DCC currency.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="GetDCCResponse"/> data.</returns>
+        /// <exception cref="SafechargeConfigurationException">If the status of the response is Error.</exception>
         Task<GetDCCResponse> GetDccDetails(
-    string clientRequestId,
-    string clientUniqueId,
-    string cardNumber,
-    string originalAmount,
-    string originalCurrency,
-    string currency);
+            string clientRequestId,
+            string clientUniqueId,
+            string cardNumber,
+            string originalAmount,
+            string originalCurrency,
+            string currency);
     }
 }

@@ -11,23 +11,25 @@ using Safecharge.Utils.Enum;
 namespace Safecharge.Request.Common
 {
     /// <summary>
-    /// Abstract class to be used as a base for all of the requests to SafeCharge's servers.
+    /// Abstract base class for all request objects sent to the Safecharge API.
+    /// It includes common properties like session token, timestamp, checksum, and merchant host information.
     /// </summary>
     public abstract class SafechargeBaseRequest
     {
         /// <summary>
-        /// Empty constructor used for mapping from config file.
+        /// Initializes a new instance of the <see cref="SafechargeBaseRequest"/> class.
+        /// This empty constructor is often used for deserialization or direct instantiation.
         /// </summary>
         public SafechargeBaseRequest() : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafechargeBaseRequest"/> with the required parameters.
+        /// Initializes a new instance of the <see cref="SafechargeBaseRequest"/> class with essential merchant and session information.
         /// </summary>
-        /// <param name="merchantInfo">Merchant's data (E.g. secret key, the merchant id, the merchant site id, etc.)</param>
-        /// <param name="checksumOrderMapping">Type of checksum.</param>
-        /// <param name="sessionToken">The session identifier returned by /getSessionToken.</param>
+        /// <param name="merchantInfo">Merchant information which includes server host, secret key, and hashing algorithm. See <see cref="Model.Common.MerchantInfo"/>.</param>
+        /// <param name="checksumOrderMapping">The order of fields to be used for checksum calculation. See <see cref="Utils.Enum.ChecksumOrderMapping"/>.</param>
+        /// <param name="sessionToken">The session token obtained from Safecharge API. This parameter is optional and can be null if not yet obtained (e.g., for GetSessionTokenRequest itself).</param>
         public SafechargeBaseRequest(
             MerchantInfo merchantInfo,
             ChecksumOrderMapping checksumOrderMapping,
@@ -41,26 +43,64 @@ namespace Safecharge.Request.Common
             this.ChecksumOrderMapping = checksumOrderMapping;
         }
 
+        /// <summary>
+        /// Gets the merchant's secret key, used for checksum calculation.
+        /// </summary>
         protected string MerchantKey { get; private set; }
 
+        /// <summary>
+        /// Gets the hashing algorithm type used for checksum calculation.
+        /// </summary>
         protected HashAlgorithmType HashAlgorithmType { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the mapping type that defines the order of parameters for checksum calculation.
+        /// </summary>
         protected ChecksumOrderMapping ChecksumOrderMapping { get; set; }
 
+        /// <summary>
+        /// Gets or sets an internal request identifier. This can be used for tracing or logging.
+        /// </summary>
         public string InternalRequestId { get; set; }
 
+        /// <summary>
+        /// Gets or sets a client-generated request identifier.
+        /// This can be used to ensure idempotency if the same ID is submitted multiple times.
+        /// </summary>
         public string ClientRequestId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the timestamp of the request in "yyyyMMddHHmmss" format.
+        /// Automatically set during construction.
+        /// </summary>
         public string TimeStamp { get; set; }
 
+        /// <summary>
+        /// Gets the calculated checksum for the request.
+        /// The checksum is generated based on the <see cref="ChecksumOrderMapping"/> and <see cref="MerchantKey"/>.
+        /// </summary>
         public string Checksum => this.CalculateChecksum(this.ChecksumOrderMapping);
 
+        /// <summary>
+        /// Gets or sets the session token for the request.
+        /// </summary>
         public string SessionToken { get; set; }
 
+        /// <summary>
+        /// Gets or sets the server host URL for the Safecharge API.
+        /// </summary>
         public string ServerHost { get; set; }
 
+        /// <summary>
+        /// Gets or sets the fully constructed request URI, including the server host and relative path.
+        /// This is typically set by derived request classes.
+        /// </summary>
         public Uri RequestUri { get; set; }
 
+        /// <summary>
+        /// Gets the WebMaster ID, which includes the SDK version.
+        /// This is used for identifying the source of the request.
+        /// </summary>
         public string WebMasterId 
         {
             get
@@ -71,6 +111,12 @@ namespace Safecharge.Request.Common
             }
         } 
 
+        /// <summary>
+        /// Helper method for derived classes to create the full request URI.
+        /// </summary>
+        /// <param name="relativePath">The relative path for the specific API endpoint (e.g., "payment.do").</param>
+        /// <param name="queryString">Optional query string to append to the URI.</param>
+        /// <returns>The fully constructed <see cref="Uri"/> for the request.</returns>
         protected Uri CreateRequestUri(string relativePath, string queryString = "")
         {
             var endpoint = new Uri($"{this.ServerHost}{relativePath}");

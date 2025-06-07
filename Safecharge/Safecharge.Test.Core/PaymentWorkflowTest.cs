@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System; // Added for ArgumentException
+using NUnit.Framework;
 using Safecharge.Model.Common;
 using Safecharge.Model.PaymentOptionModels;
 using Safecharge.Request;
@@ -83,6 +84,69 @@ namespace Safecharge.Test.Core
             Assert.IsNull(paymentUPOResponse.GwErrorReason);
             Assert.IsNull(paymentUPOResponse.PaymentMethodErrorReason);
             Assert.AreNotEqual(ApiConstants.TransactionStatusError, paymentUPOResponse.TransactionStatus);
+        }
+
+        [Test]
+        public void PaymentRequest_Constructor_ValidCurrency_ShouldNotThrow()
+        {
+            // Assuming merchantInfo, sessionToken, amount, paymentOptionCard are available from base or setup
+            Assert.DoesNotThrow(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                "USD", // Valid currency
+                amount,
+                paymentOptionCard
+            ), "Constructing PaymentRequest with valid currency 'USD' should not throw.");
+
+            Assert.DoesNotThrow(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                "EUR", // Valid currency
+                amount,
+                paymentOptionCard
+            ), "Constructing PaymentRequest with valid currency 'EUR' should not throw.");
+
+            // Test with null or empty currency, as Guard allows it (optional)
+            // The Guard.RequiresValidCurrencyCode currently returns if string.IsNullOrWhiteSpace(currencyCode) is true.
+            Assert.DoesNotThrow(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                null, // Null currency
+                amount,
+                paymentOptionCard
+            ), "Constructing PaymentRequest with null currency should not throw.");
+
+            Assert.DoesNotThrow(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                "", // Empty currency
+                amount,
+                paymentOptionCard
+            ), "Constructing PaymentRequest with empty currency should not throw.");
+
+            Assert.DoesNotThrow(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                "   ", // Whitespace currency
+                amount,
+                paymentOptionCard
+            ), "Constructing PaymentRequest with whitespace currency should not throw.");
+        }
+
+        [TestCase("US")]
+        [TestCase("EURO")]
+        [TestCase("123")]
+        [TestCase("usD")] // Regex is case-sensitive for [A-Z]
+        [TestCase(" EUR")] // Leading space
+        public void PaymentRequest_Constructor_InvalidCurrency_ShouldThrowArgumentException(string invalidCurrency)
+        {
+            Assert.Throws<ArgumentException>(() => new PaymentRequest(
+                merchantInfo,
+                sessionToken,
+                invalidCurrency, // Invalid currency
+                amount,
+                paymentOptionCard
+            ), $"Constructing PaymentRequest with invalid currency '{invalidCurrency}' should throw ArgumentException.");
         }
     }
 }

@@ -19,6 +19,9 @@ namespace Safecharge.Model.Common
         private string cell;
         private string county;
 
+        /// <summary>
+        /// The first name of the user.
+        /// </summary>
         public string FirstName
         {
             get { return this.firstName; }
@@ -29,6 +32,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The last name of the user.
+        /// </summary>
         public string LastName
         {
             get { return this.lastName; }
@@ -39,6 +45,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The email address of the user.
+        /// </summary>
         public string Email
         {
             get { return this.email; }
@@ -49,6 +58,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The phone number of the user.
+        /// </summary>
         public string Phone
         {
             get { return this.phone; }
@@ -59,6 +71,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The primary street address line.
+        /// </summary>
         public string Address
         {
             get { return this.address; }
@@ -69,6 +84,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The city of the address.
+        /// </summary>
         public string City
         {
             get { return this.city; }
@@ -79,16 +97,23 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The two-letter ISO country code (e.g., US, GB).
+        /// </summary>
         public string Country
         {
             get { return this.country; }
             set
             {
                 Guard.RequiresMaxLength(value?.Length, Constants.MaxLengthCountry, nameof(this.Country));
+                Guard.RequiresValidCountryCode(value, nameof(this.Country));
                 this.country = value;
             }
         }
 
+        /// <summary>
+        /// The state or province of the address.
+        /// </summary>
         public string State
         {
             get { return this.state; }
@@ -99,6 +124,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The postal or ZIP code.
+        /// </summary>
         public string Zip
         {
             get { return this.zip; }
@@ -109,6 +137,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The cell phone number of the user.
+        /// </summary>
         public string Cell
         {
             get { return this.cell; }
@@ -119,6 +150,9 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// The county of the address.
+        /// </summary>
         public string County
         {
             get { return this.county; }
@@ -129,14 +163,30 @@ namespace Safecharge.Model.Common
             }
         }
 
+        /// <summary>
+        /// Indicates if the AVS check resulted in a match. (e.g., Y, N, X)
+        /// This property might be more relevant in a response context.
+        /// </summary>
         public string AddressMatch { get; set; }
 
+        /// <summary>
+        /// The second line of the street address.
+        /// </summary>
         public string AddressLine2 { get; set; }
 
+        /// <summary>
+        /// The third line of the street address.
+        /// </summary>
         public string AddressLine3 { get; set; }
 
+        /// <summary>
+        /// The home phone number of the user.
+        /// </summary>
         public string HomePhone { get; set; }
 
+        /// <summary>
+        /// The work phone number of the user.
+        /// </summary>
         public string WorkPhone { get; set; }
     }
 }

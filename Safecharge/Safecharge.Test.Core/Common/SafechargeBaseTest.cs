@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks; // Added for Task
+using Microsoft.Extensions.Logging.Abstractions; // Added for NullLoggerFactory
 using NUnit.Framework;
 using Safecharge.Model.Common;
 using Safecharge.Model.PaymentOptionModels.CardModels;
@@ -46,14 +48,15 @@ namespace Safecharge.Test.Core.Common
         };
 
         [SetUp]
-        public void Setup()
+        public async Task Setup() // Changed to async Task
         {
-            safecharge = new Safecharge(
+            safecharge = await Safecharge.CreateAsync( // Changed to await CreateAsync
                 MerchantKeyValue,
                 MerchantIdValue,
                 MerchantSiteIdValue,
                 ServerHostValue,
-                HashAlgorithmType.SHA256);
+                HashAlgorithmType.SHA256,
+                NullLoggerFactory.Instance); // Added NullLoggerFactory
         }
     }
 }

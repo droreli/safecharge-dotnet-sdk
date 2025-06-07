@@ -5,7 +5,8 @@ using Safecharge.Utils.Enum;
 namespace Safecharge.Request.Common.Payment
 {
     /// <summary>
-    /// Abstract class to be used as a base for payment requests.
+    /// Abstract base class for payment requests that include order details and common payment parameters.
+    /// It extends <see cref="SafechargeOrderDetailsRequest"/>.
     /// </summary>
     public abstract class SafechargePaymentRequest : SafechargeOrderDetailsRequest
     {
@@ -22,13 +23,13 @@ namespace Safecharge.Request.Common.Payment
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafechargePaymentRequest"/> with the required parameters.
+        /// Initializes a new instance of the <see cref="SafechargePaymentRequest"/> class with essential parameters.
         /// </summary>
-        /// <param name="merchantInfo">Merchant's data (E.g. secret key, the merchant id, the merchant site id, etc.)</param>
-        /// <param name="checksumOrderMapping">Type of checksum.</param>
-        /// <param name="sessionToken">The session identifier returned by /getSessionToken.</param>
-        /// <param name="currency">The three character ISO currency code of the transaction.</param>
-        /// <param name="amount">The transaction amount. (E.g. 1, 101.10 - decimal representation of the amount as <see cref="string"/>.</param>
+        /// <param name="merchantInfo">Merchant information. See <see cref="Model.Common.MerchantInfo"/>.</param>
+        /// <param name="checksumOrderMapping">The order of fields used for checksum calculation. See <see cref="Utils.Enum.ChecksumOrderMapping"/>.</param>
+        /// <param name="sessionToken">The session token obtained from Safecharge API.</param>
+        /// <param name="currency">The three-letter ISO currency code.</param>
+        /// <param name="amount">The transaction amount as a string.</param>
         public SafechargePaymentRequest(
             MerchantInfo merchantInfo,
             ChecksumOrderMapping checksumOrderMapping,
@@ -40,10 +41,16 @@ namespace Safecharge.Request.Common.Payment
         }
 
         /// <summary>
-        /// Transaction Type of the request. Possible values for payment request: Auth / Sale / PreAuth.
+        /// Transaction type of the request (e.g., "Auth", "Sale", "PreAuth").
+        /// Constants for common transaction types can be found in <see cref="ApiConstants"/>.
         /// </summary>
         public string TransactionType { get; set; }
 
+        /// <summary>
+        /// The merchant's site name. Useful for merchants operating multiple websites.
+        /// Risk rules and traffic management rules can be built based on this field.
+        /// </summary>
+        /// <remarks>Max length is 50.</remarks>
         public string CustomSiteName
         {
             get { return this.customSiteName; }
@@ -54,6 +61,12 @@ namespace Safecharge.Request.Common.Payment
             }
         }
 
+        /// <summary>
+        /// A free text field to identify the product or service sold.
+        /// If not sent or empty, it may be concatenated from item names.
+        /// Risk rules and traffic management rules can be built based on this field.
+        /// </summary>
+        /// <remarks>Max length is 50.</remarks>
         public string ProductId
         {
             get { return this.productId; }
@@ -64,6 +77,11 @@ namespace Safecharge.Request.Common.Payment
             }
         }
 
+        /// <summary>
+        /// Custom data that can be passed with the request.
+        /// This data is passed to the payment gateway and is visible in transaction reporting.
+        /// </summary>
+        /// <remarks>Max length is defined by <see cref="Constants.MaxLengthStringDefault"/>.</remarks>
         public string CustomData
         {
             get { return this.customData; }
@@ -74,6 +92,10 @@ namespace Safecharge.Request.Common.Payment
             }
         }
 
+        /// <summary>
+        /// The ID of a related, previous transaction (e.g., for rebilling or referencing a prior authorization).
+        /// </summary>
+        /// <remarks>Max length is 19.</remarks>
         public string RelatedTransactionId
         {
             get { return this.relatedTransactionId; }

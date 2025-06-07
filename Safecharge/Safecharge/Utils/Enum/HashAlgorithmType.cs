@@ -5,7 +5,13 @@
     /// </summary>
     public enum HashAlgorithmType
     {
+        /// <summary>
+        /// MD5 Hashing Algorithm.
+        /// </summary>
         MD5,
+        /// <summary>
+        /// SHA-256 Hashing Algorithm. This is the recommended algorithm.
+        /// </summary>
         SHA256
     }
 }
